@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+			<link rel="stylesheet" type="text/css" href="css/UploadPicture.css"/>
+	</head>
+	<body>
+		<form action="UploadPicture.php" method="post" enctype="multipart/form-data" id="formLogin"  onsubmit="return false">
+		<div class="start">
+			 <ul class="paixue">
+                        <div class="yanzRight" style="position: relative;z-index: 99999;">
+                        	<input type="text" name="headImage" id="userpice" hidden="hidden" value="" />
+                            <input style="margin-top:5px;float: left;" id="st20"  onchange="previewImage(this,5)" type="file" multiple="multiple" />
+                            <img src="image/phone.png" id="imghead5" class="imgg">
+                            <span class="dui" id="imgOrder_dui" style="display: none;"></span>
+                        </div>
+                        <div id="preview5" style="clear:both;">
+                            <img src="" alt="" height="200" width="200" style="display:none;" />
+                        </div>
+              </ul>
+		</div>
+		<div class="xiugaixinxi">
+			<button class="save">提交</button>
+		</div>
+		</from>
+	</body>
+<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/formDate.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+            var b = 1;
+            function previewImage(file, imgNum) {
+            b = 2;
+            var MAXWIDTH = 200;
+            var MAXHEIGHT = 200;
+            var div = document.getElementById('preview' + imgNum);
+            if (file.files && file.files[0]) {
+                div.innerHTML = '<img id=imghead' + imgNum + '>';
+                var img = document.getElementById('imghead' + imgNum + '');
+                img.onload = function() {
+                    var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+                    img.width = rect.width;
+                    img.height = rect.height;
+                    img.style.marginTop = 0 + 'px';
+                }
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    img.src = evt.target.result;
+                }
+                reader.readAsDataURL(file.files[0]);
+            } else //
+            {
+                var sFilter = 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+                file.select();
+                var src = document.selection.createRange().text;
+                div.innerHTML = '<img id=imghead' + imgNum + '>';
+                var img = document.getElementById('imghead2');
+                img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+                var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+                status = ('rect:' + rect.top + ',' + rect.left + ',' + rect.width + ',' + rect.height);
+                div.innerHTML = "<div id=divhead" + imgNum + " style='width:" + rect.width + "px;height:" + rect.height + "px;margin-top:" + rect.top + "px;" + sFilter + src + "\"'></div>";
+            }
+        }
+                 
+		</script>
+        <script type="text/javascript">
+          $("body").on("click",".save",function(){
+                  //已选择图片
+                   if(b==2){
+                       // 提交form
+                         $("#formLogin").submit();
+                        // 解决form表单提交之后的页面跳转问题，并返回后台数据（基于formDate.js与jquery.js）
+                         $("#formLogin").ajaxForm(function(message){
+                            //如果后台返回的状态码为1，说明上传图片成功，执行if，否则上传图片失败，执行else
+                        if(message.state==1){
+                          alert("上传图片成功");
+                         } else{
+                            alert("上传图片失败");
+                         }
+                });
+                    // 未选择图片
+                   }else{
+                         console.log("请选择您要上传的图片")
+                   }
+                 })
+        </script>
+</html>
